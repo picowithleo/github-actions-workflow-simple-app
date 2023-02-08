@@ -103,7 +103,8 @@ jobs:
         uses: Azure/k8s-deploy@v4.9
         with:
           # Choose the target Kubernetes namespace. If the namespace is not provided, the commands will run in the default namespace.
-         # namespace: # optional, default is default
+          namespace: default
+          # optional, default is default
           # Path to the manifest files which will be used for deployment.
           manifests: |
             hello-world-deployment.yaml

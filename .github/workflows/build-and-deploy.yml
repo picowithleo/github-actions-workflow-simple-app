@@ -84,8 +84,8 @@ jobs:
       - name: envsubst-action
         uses: danielr1996/envsubst-action@1.1.0
         env:
-        # ${{ secrets.MONGODB_URL }}
-          MONGODB_URL: 'mongodb://picodemo:Gfru3rpttp9cm63CWlQcX137J8IvmOS1YXWukq1EbN2apmk04mq5k72l8IASJJ8cSNjceixOch1LACDbUXd0Ew==@picodemo.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@picodemo@'
+        # ${{ secrets.MONGODB_URI }}
+          MONGODB_URI: 'mongodb://picodemo:Gfru3rpttp9cm63CWlQcX137J8IvmOS1YXWukq1EbN2apmk04mq5k72l8IASJJ8cSNjceixOch1LACDbUXd0Ew==@picodemo.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@picodemo@'
           CONTAINER_NAME: hello-world-app:${{ github.sha }}
         # ${{ env.AZURE_CONTAINER_REGISTRY }}
           AZURE_CONTAINER_REGISTRY: picodemo.azurecr.io

@@ -1,4 +1,8 @@
 name: Build and Deploy to Azure Env
+
+env: 
+  AZURE_CONTAINER_REGISTRY: 'picodemo.azurecr.io'
+
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
   push:
@@ -23,17 +27,18 @@ jobs:
         with:
           # Container registry username
           username: 'picodemo'
-          # Container registry password
-          password: 'xyGzsfFk+CYoVQSUtAizEYFAP4a/NbiRt1wAYz6/oq+ACRAv0HEi'
+          # Container registry password 
+          password: ${{ AZURE_CONTAINER_REGISTRY_PASSWORD }}
           # Container registry server url
-          login-server: 'picodemo.azurecr.io'
+          # login-server: 'picodemo.azurecr.io'
+          login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}
     
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           push: true
           # tags: <registry server url>/<app name>:<git commit sha>
-          tags: picodemo.azurecr.io/hello-world-app:${{ github.sha }}
+          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}/hello-world-app:${{ github.sha }}
           file: ./Dockerfile
       
       
@@ -54,13 +59,10 @@ jobs:
       - name: 'Azure login'
         uses: azure/login@v1.4.6
         with:
-        # ${{ secrets.AZURE_CLIENT_ID }}
-          client-id: '961ed84d-ffa3-43fc-b805-a6540ee9ba65'
-        # ${{ secrets.AZURE_TENANT_ID }} 
-          tenant-id: '4589c376-20d4-4d74-a49d-dde5d76a4683'
-        # ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          subscription-id: '645e7665-7a21-4aa0-86d6-5680e789b895'
-          
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}  
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+                 
       - name: Setup kubelogin
         uses: Azure/use-kubelogin@v1
         with:
@@ -74,7 +76,7 @@ jobs:
           # AKS Cluster Name
           cluster-name: 'picodemo'
           # AKS Cluster Subscription
-          subscription: '645e7665-7a21-4aa0-86d6-5680e789b895'
+          subscription: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           # Get cluster admin credentials. Values: true or false
           admin: 'false'
           # Enables kubelogin for non-admin user scenario. Values: true or false
@@ -84,11 +86,10 @@ jobs:
       - name: envsubst-action
         uses: danielr1996/envsubst-action@1.1.0
         env:
-        # ${{ secrets.MONGODB_URI }}
-          MONGODB_URI: 'mongodb://picodemo:Gfru3rpttp9cm63CWlQcX137J8IvmOS1YXWukq1EbN2apmk04mq5k72l8IASJJ8cSNjceixOch1LACDbUXd0Ew==@picodemo.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@picodemo@'
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
           CONTAINER_NAME: hello-world-app:${{ github.sha }}
         # ${{ env.AZURE_CONTAINER_REGISTRY }}
-          AZURE_CONTAINER_REGISTRY: picodemo.azurecr.io
+          AZURE_CONTAINER_REGISTRY: ${{ env.AZURE_CONTAINER_REGISTRY }}
         with:
           # File to run substitutions on
           input:
@@ -114,7 +115,7 @@ jobs:
             kubernetes/hello-world-service.yaml
           # Fully qualified resource URL of the image(s) to be used for substitutions on the manifest files Example: contosodemo.azurecr.io/helloworld:test
           images: |
-            picodemo.azurecr.io/hello-world-app:${{ github.sha }}
+            ${{ env.AZURE_CONTAINER_REGISTRY }}/hello-world-app:${{ github.sha }}
           # optional
           # Name of a docker-registry secret that has already been set up within the cluster. Each of these secret names are added under imagePullSecrets field for the workloads found in the input manifest files
          # imagepullsecrets: # optional

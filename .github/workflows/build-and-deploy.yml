@@ -2,7 +2,7 @@ name: Build and Deploy to Azure Env
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on:
   push:
-    branches: ['master'] 
+    branches: ['master']
   workflow_dispatch:
   
 jobs:
@@ -29,6 +29,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
+          # tags: <registry server url>/<git commit sha>
           tags: picodemo.azurecr.io/hello-world-app:${{ github.sha }}
           file: ./Dockerfile
           
@@ -36,4 +37,3 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "hello"
-

@@ -100,10 +100,10 @@ jobs:
           
       # Deploys application based on given manifest file
       - name: Deploy to Kubernetes cluster
-        uses: Azure/k8s-deploy@v4.9
+        uses: Azure/k8s-deploy@v4
         with:
           # Choose the target Kubernetes namespace. If the namespace is not provided, the commands will run in the default namespace.
-          namespace: default
+          #namespace: 
           # optional, default is default
           # Path to the manifest files which will be used for deployment.
           manifests: |
